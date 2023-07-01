@@ -380,3 +380,75 @@ Header(s) *meow*
 -(void)_configurePercentChargeLabelIfNecessary;
 -(void)_configureNameLabelIfNecessary;
 @end
+@class BCUIRingView, BCUIRingCapShadow, UIImageView, CABackdropLayer, MTVisualStylingProvider, UIImage, NSArray, NSString;
+
+@interface BCUIChargeRing : UIView {
+
+	BCUIRingView* _baseRing;
+	BCUIRingView* _chargeRing;
+	BCUIRingCapShadow* _ringCapShadow;
+	UIImageView* _boltMaskImageView;
+	UIImageView* _boltImageView;
+	CABackdropLayer* _captureBackdrop;
+	UIImageView* _glyphImageView;
+	MTVisualStylingProvider* _visualStylingProvider;
+	MTVisualStylingProvider* _baseRingVisualStylingProvider;
+	BOOL _lowCharge;
+	BOOL _charging;
+	BOOL _lowPowerModeEnabled;
+	double _lineWidth;
+	long long _percentCharge;
+	UIImage* _glyph;
+	id<UIViewControllerTransitionCoordinator> _transitionCoordinator;
+}
+@property (assign,nonatomic) double lineWidth;                                                                    //@synthesize lineWidth=_lineWidth - In the implementation block
+@property (nonatomic,copy,readonly) NSArray * requiredVisualStyleCategories; 
+@property (readonly) unsigned long long hash; 
+@property (readonly) Class superclass; 
+@property (copy,readonly) NSString * description; 
+@property (copy,readonly) NSString * debugDescription; 
+@property (assign,nonatomic) long long percentCharge;                                                             //@synthesize percentCharge=_percentCharge - In the implementation block
+@property (assign,getter=isCharging,nonatomic) BOOL charging;                                                     //@synthesize charging=_charging - In the implementation block
+@property (assign,getter=isLowCharge,nonatomic) BOOL lowCharge;                                                   //@synthesize lowCharge=_lowCharge - In the implementation block
+@property (assign,getter=isLowPowerModeEnabled,nonatomic) BOOL lowPowerModeEnabled;                               //@synthesize lowPowerModeEnabled=_lowPowerModeEnabled - In the implementation block
+@property (nonatomic,retain) UIImage * glyph;                                                                     //@synthesize glyph=_glyph - In the implementation block
+@property (nonatomic,copy) NSString * name; 
+@property (nonatomic,copy,readwrite) UIColor * strokeColor;              //@synthesize strokeColor=_strokeColor - In the implementation block
+@property (assign,getter=isEmpty,nonatomic) BOOL empty; 
+-(CGSize)sizeThatFits:(CGSize)arg1 ;
+-(void)setLineWidth:(double)arg1 ;
+-(double)lineWidth;
+-(void)layoutSubviews;
+-(void)didMoveToWindow;
+-(void)setCharging:(BOOL)arg1 ;
+-(void)didMoveToSuperview;
+-(void)setGlyph:(UIImage *)arg1 ;
+-(void)setLowPowerModeEnabled:(BOOL)arg1 ;
+-(BOOL)isLowPowerModeEnabled;
+-(BOOL)isCharging;
+-(NSArray *)requiredVisualStyleCategories;
+-(long long)percentCharge;
+-(id)_glyphImageView;
+-(void)_dynamicUserInterfaceTraitDidChange;
+-(void)setPercentCharge:(long long)arg1 ;
+-(UIImage *)glyph;
+-(void)setVisualStylingProvider:(id)arg1 forCategory:(long long)arg2 ;
+-(id)_chargeRing;
+-(BOOL)isLowCharge;
+-(void)setLowCharge:(BOOL)arg1 ;
+-(void)_updateVisualStylingWithProvidersFromStylingProvider:(id)arg1 ;
+-(id)_visualStylingProviderForCategory:(long long)arg1 ;
+-(id)_baseRing;
+-(void)_updateVisualStylingForBaseRingIfNecessary;
+-(void)_configureRingCapShadowIfNecessary;
+-(BOOL)_shouldShowRingCapShadow;
+-(void)_configureBoltMaskImageViewIfNecessary;
+-(void)_configureBoltImageViewIfNecessary;
+-(void)_updateVisualStylingForBolt;
+-(void)_configureCaptureBackdropIfNecessary;
+-(void)_stopAutomaticallyUpdatingVisualStylingForCategory:(long long)arg1 ;
+-(void)_beginAutomaticallyUpdatingVisualStylingForCategory:(long long)arg1 ;
+-(BOOL)_isPastThresholdForRingCapShadow;
+-(void)_beginAutomaticallyUpdatingPrimaryVisualStylingForView:(id)arg1 observerBlock:(/*^block*/id)arg2 ;
+-(id)_ringVisualStylingProvider;
+@end

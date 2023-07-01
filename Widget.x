@@ -29,56 +29,130 @@ NSUserDefaults *_preferences;
 BOOL _enabled;
 
 %hook SBHWidgetStackViewController
+
 -(UIView *)view {
- UIView *kotaView = %orig;
- if (!kotaView) {
-  return kotaView;
+ UIView *daView = %orig;
+ if (!daView) {
+  return daView;
  }
- NSArray *subviews = kotaView.superview.subviews;
- for (UIView * origSubview in subviews) {
+ NSString *subBackgroundColorString = [_preferences objectForKey:@"backgroundColor"];
+ NSArray *subviews = daView.superview.subviews;
+ for (MTMaterialView * origSubview in subviews) {
+  if ([origSubview isMemberOfClass:%c(MTMaterialView)]) {
+   origSubview.blurEnabled = NO;
+   if (subBackgroundColorString) {
+    origSubview.backgroundColor = iLoveRedBull(subBackgroundColorString);
+   }
+  }
   NSArray *subviewsInSubview = origSubview.subviews;
-  for (MTMaterialView * subviewInSubview in subviewsInSubview) {
+  for (MTMaterialView *subviewInSubview in subviewsInSubview) {
    if ([subviewInSubview isMemberOfClass:%c(MTMaterialView)]) {
-    NSString *widgetBackgroundColorString = [_preferences objectForKey:@"backgroundColor"];
-    if (widgetBackgroundColorString) {
-        subviewInSubview.backgroundColor = iLoveRedBull(widgetBackgroundColorString);
-    }
-    NSLog(@"[*]We hooked bg color for Battery widgets on MTMaterialView: %@",widgetBackgroundColorString);
     subviewInSubview.blurEnabled = NO;
+    if (subBackgroundColorString) {
+    subviewInSubview.backgroundColor = iLoveRedBull(subBackgroundColorString);
+    }
+   }
+   NSArray *UGH = subviewInSubview.subviews;
+   for (MTMaterialView *subviewInSubviewInSubview in UGH) {
+    if ([subviewInSubviewInSubview isMemberOfClass:%c(MTMaterialView)]) {
+     subviewInSubviewInSubview.blurEnabled = NO;
+      if (subBackgroundColorString) {
+        subviewInSubviewInSubview.backgroundColor = iLoveRedBull(subBackgroundColorString);
+     }
+    }
    }
   }
  }
- CALayer *kotaLayer = kotaView.layer;
+
+ CALayer *daLayer = daView.layer;
  NSString *widgetShadowColorString = [_preferences objectForKey:@"shadowColor"];
  if (widgetShadowColorString) {
-    kotaLayer.shadowColor = iLoveRedBull(widgetShadowColorString).CGColor;
-    NSLog(@"[*]We hooked Shadow for widgets: %@",widgetShadowColorString);
+    daLayer.shadowColor = iLoveRedBull(widgetShadowColorString).CGColor;
   }
- kotaLayer.shadowOpacity = 1;
- return kotaView;
+ daLayer.shadowOpacity = 1;
+ return daView;
 }
 
 %end
 
+%hook BCUIRingItemView
 
-/*
-%hook BCUIRingView
-
--(UIColor *)fillColor {
-    UIColor *meow;
-    NSString *meowmeow = [_preferences objectForKey:@"fillColor"];
-    if (meowmeow) {
-        self.strokeColor = iLoveRedBull(meowmeow);
+-(UIView *)view {
+ UIView *daView = %orig;
+ if (!daView) {
+  return daView;
+ }
+ NSString *realRingColorString = [_preferences objectForKey:@"solidColor"];
+ NSArray *subviews = daView.superview.subviews;
+ for (BCUIChargeRing * origSubview in subviews) {
+  if ([origSubview isMemberOfClass:%c(BCUIChargeRing)]) {
+   if (realRingColorString) {
+    origSubview.strokeColor = iLoveRedBull(realRingColorString);
+   }
+  }
+  NSArray *subviewsInSubview = origSubview.subviews;
+  for (BCUIRingView *subviewInSubview in subviewsInSubview) {
+   if ([subviewInSubview isMemberOfClass:%c(BCUIRingView)]) {
+    if (realRingColorString) {
+    subviewInSubview.strokeColor = iLoveRedBull(realRingColorString);
     }
-    return meow ? meow : [UIColor systemPinkColor];
+   }
+  NSArray *subviewsInSubviewInSubview = subviewInSubview.subviews;
+  for (BCUIRingView *subviewInSubviewInSubview in subviewsInSubviewInSubview) {
+   if ([subviewInSubviewInSubview isMemberOfClass:%c(BCUIRingView)]) {
+    if (realRingColorString) {
+    subviewInSubviewInSubview.strokeColor = iLoveRedBull(realRingColorString);
+    }
+   }
+  }
+ }
+ }
+ return daView;
 }
 
--(void)setStrokeColor:(UIColor *)arg1 {
-    
+-(NSArray *)subviews {
+ id subviews = %orig;
+ NSString *realTextColorString = [_preferences objectForKey:@"textString"];
+ for (UILabel * origSubview in subviews) {
+  if ([origSubview isMemberOfClass:%c(UILabel)]) {
+   if (realTextColorString) {
+    origSubview.textColor = iLoveRedBull(realTextColorString);
+   }
+  }
+ }
+ return subviews;
+}
+%end
+
+
+%hook BCUIChargeRing
+
+-(NSArray *)subviews {
+ id subviews = %orig;
+ NSString *realRingString = [_preferences objectForKey:@"solidColor"];
+ NSString *realRingBGString = [_preferences objectForKey:@"solidColor2"];
+ for (BCUIRingView * origSubview in subviews) {
+  if ([origSubview isMemberOfClass:%c(BCUIRingView)]) {
+   if (realRingString) {
+    origSubview.strokeColor = iLoveRedBull(realRingString);
+   }
+   if (realRingBGString) {
+    origSubview.fillColor = iLoveRedBull(realRingBGString);
+   }
+  }
+ }
+ for (UIImageView * origSubview in subviews) {
+  if ([origSubview isMemberOfClass:%c(UIImageView)]) {
+    NSString *realTintColorString = [_preferences objectForKey:@"tintString"];
+    if (realTintColorString) {
+     origSubview.tintColor = iLoveRedBull(realTintColorString);
+   }
+  }
+ }
+ return subviews;
 }
 
 %end
-*/
 
 /*
 Init prefs
@@ -91,9 +165,9 @@ Init prefs
 	}];
 	_enabled = [_preferences boolForKey:@"enabled"];
 	if(_enabled) {
-		NSLog(@"[Vol15] Enabled");
+		NSLog(@"[Widget] Enabled");
 		%init();
 	} else {
-		NSLog(@"[Vol15] Disabled, bye!");
+		NSLog(@"[Widget] Disabled, bye!");
 	}
 }
